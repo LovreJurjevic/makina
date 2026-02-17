@@ -6,10 +6,12 @@ export async function proxy(request: NextRequest) {
   const { user, response } = await updateSession(request)
 
   if (!user && !request.nextUrl.pathname.startsWith('/login')) {
+    console.log('User is not authenticated, redirecting to login.')
     return NextResponse.redirect(new URL('/login', request.url))
   }
 
   if (user && request.nextUrl.pathname.startsWith('/login')) {
+    console.log('User is already authenticated, redirecting to dashboard.')
     return NextResponse.redirect(new URL('/dashboard', request.url))
   }
 
