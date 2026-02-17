@@ -8,18 +8,19 @@
   /* DIRECT HEX DEFINITIONS - No more bugging out */
   --color-workshop-blue: #1d4ed8;
   --color-workshop-yellow: #facc15;
-  
+
   /* Mapping Shadcn names to Hex */
   --color-primary: #1d4ed8;
   --color-primary-foreground: #ffffff;
-  
+
   --color-accent: #facc15;
   --color-accent-foreground: #1e3a8a;
 
   /* Neutrals */
   --color-background: #f8fafc;
   --color-foreground: #0f172a;
-  --color-muted-foreground: #94a3b8; /* Proper grayish placeholder color */
+  --color-muted-foreground: #94a3b8;
+  /* Proper grayish placeholder color */
   --color-border: #e2e8f0;
   --color-input: #e2e8f0;
 }
@@ -35,4 +36,12 @@
   color: #ffffff !important;
   border-bottom: 8px solid #facc15 !important;
   padding: 2.5rem 2rem !important;
+}
+
+.form-input-styled {
+  @apply w-full h-14 px-6 bg-slate-50 border-2 border-slate-100 rounded-2xl font-bold outline-none focus:border-blue-600 focus:bg-white transition-all;
+}
+
+.form-input-minimal {
+  @apply w-full h-12 px-4 bg-transparent border-2 border-slate-100 rounded-xl font-bold text-slate-900 outline-none focus:border-blue-600 focus:bg-white transition-all;
 }

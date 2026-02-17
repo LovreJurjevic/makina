@@ -14,7 +14,7 @@ export default function LoginPage() {
 
   return (
     <div className="flex min-h-screen w-full items-center justify-center bg-slate-100 p-4">
-      <div className="w-full max-w-[420px] bg-white rounded-2xl shadow-xl overflow-hidden border-none">
+      <div className="w-full max-w-105 bg-white rounded-2xl shadow-xl overflow-hidden border-none">
 
         {/* HEADER: Solid blue with the thick yellow stripe underneath */}
         <div className="workshop-header">
