@@ -9,6 +9,7 @@ import {
     Plus
 } from "lucide-react";
 import Link from "next/link";
+import { signOut } from "./actions";
 
 export default async function DashboardLayout({
     children,
@@ -53,12 +54,11 @@ export default async function DashboardLayout({
                         </div>
                     </div>
 
-                    <form action="/auth/signout" method="post">
-                        <button className="flex items-center gap-2 w-full px-4 py-3 text-sm font-bold text-blue-200 hover:text-white hover:bg-blue-700 rounded-xl transition-all cursor-pointer group border-none">
-                            <LogOut size={18} className="group-hover:translate-x-1 transition-transform" />
-                            ODJAVA
-                        </button>
-                    </form>
+                    <button onClick={signOut} className="flex items-center gap-2 w-full px-4 py-3 text-sm font-bold text-blue-200 hover:text-white hover:bg-blue-700 rounded-xl transition-all cursor-pointer group border-none">
+                        <LogOut size={18} className="group-hover:translate-x-1 transition-transform" />
+                        ODJAVA
+                    </button>
+
                 </div>
             </aside>
 
