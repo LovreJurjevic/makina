@@ -38,7 +38,7 @@ export default async function DashboardLayout({
 
                 <nav className="flex-1 p-4 space-y-2 mt-6">
                     <NavItem href="/dashboard" icon={<LayoutDashboard size={20} />} label="Početna stranica" />
-                    <NavItem href="/dashboard/vozila" icon={<Car size={20} />} label="Vozila" />
+                    <NavItem href="/dashboard/vehicles" icon={<Car size={20} />} label="Vozila" />
                     <NavItem href="/dashboard/nalozi" icon={<ClipboardList size={20} />} label="Radni Nalozi" />
                     <NavItem href="/dashboard/postavke" icon={<Settings size={20} />} label="Postavke" />
                 </nav>
@@ -71,10 +71,12 @@ export default async function DashboardLayout({
                         <span className="text-slate-900">MAKI - obrt za automehaničarske usluge</span>
                     </div>
 
-                    <button className="bg-[#facc15] hover:bg-[#fde047] text-[#1e3a8a] px-6 py-3 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all active:scale-[0.98] shadow-md shadow-yellow-500/10 flex items-center gap-2 cursor-pointer border-none">
-                        <Plus size={16} strokeWidth={4} />
-                        Novi Radni Nalog
-                    </button>
+                    <Link href="/dashboard/orders/new">
+                        <button className="bg-[#facc15] hover:bg-[#fde047] text-[#1e3a8a] px-6 py-3 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all active:scale-[0.98] shadow-md shadow-yellow-500/10 flex items-center gap-2 cursor-pointer border-none">
+                            <Plus size={16} strokeWidth={4} />
+                            Novi Radni Nalog
+                        </button>
+                    </Link>
                 </header>
 
                 <div className="p-10 w-full">

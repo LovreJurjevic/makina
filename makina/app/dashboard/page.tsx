@@ -19,7 +19,7 @@ export default async function DashboardPage() {
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                 <div>
                     <h1 className="text-4xl font-black tracking-tighter text-slate-900 uppercase italic">
-                        MAKINA <span className="text-[#1d4ed8]">MECCANICO</span>
+                        MAKINA <span className="text-[#1d4ed8]">HOME</span>
                     </h1>
                     <p className="text-slate-500 font-bold text-[10px] uppercase tracking-[0.3em]">
                         Prijavljen: {user?.email}
@@ -40,7 +40,7 @@ export default async function DashboardPage() {
             {/* 2. The Quick Access Menu (The "Big Three") */}
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
                 <ActionButton
-                    href="/dashboard/nalozi/novi"
+                    href="/dashboard/orders/new"
                     icon={<ClipboardPlus size={32} />}
                     label="Novi Radni Nalog"
                     description="Otvori nalog za popravak"
