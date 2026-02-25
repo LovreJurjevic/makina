@@ -25,7 +25,7 @@ export async function createWorkOrder(formData: FormData) {
 
     if (error) {
         console.error('Error creating work order:', error)
-        return { error: 'Failed to create work order' }
+        return
     }
 
     // Refresh the orders list and redirect

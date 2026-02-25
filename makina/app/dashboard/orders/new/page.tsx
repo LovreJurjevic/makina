@@ -22,7 +22,7 @@ export default function NewWorkOrder() {
         async function loadOrderData() {
             const [ve, em] = await Promise.all([
                 supabase.from('vehicles').select('id, registration, make, model'),
-                supabase.from('employees').select('id, name')
+                supabase.from('employees').select('id, name, surname')
             ])
             setDbData({
                 vehicles: ve.data || [],
@@ -41,7 +41,7 @@ export default function NewWorkOrder() {
                 <ArrowLeft size={14} className="group-hover:-translate-x-1 transition-transform" />
                 Povratak
             </Link>
-            <form action={createWorkOrder} method="POST" className="bg-white rounded-[3rem] shadow-2xl border-2 border-slate-100 overflow-hidden text-slate-900">
+            <form action={createWorkOrder} className="bg-white rounded-[3rem] shadow-2xl border-2 border-slate-100 overflow-hidden text-slate-900">
 
                 {/* HEADER SECTION */}
                 <div className="bg-slate-900 p-10 text-white">
@@ -76,7 +76,7 @@ export default function NewWorkOrder() {
                                 placeholder="Dodijeli zaposlenika..."
                                 options={dbData.employees.map((e: any) => ({
                                     id: e.id,
-                                    label: e.name
+                                    label: e.name+' '+e.surname
                                 }))}
                                 onSelect={(opt: any) => setSelectedEmployeeId(opt.id)}
                             />
@@ -92,7 +92,7 @@ export default function NewWorkOrder() {
                                 name="description"
                                 rows={4}
                                 placeholder="Npr. izmjena ulja i filtera..."
-                                className="w-full p-6 bg-slate-50 border-2 border-slate-100 rounded-[2rem] font-bold text-slate-900 outline-none focus:border-blue-600 focus:bg-white transition-all resize-none"
+                                className="w-full p-6 bg-slate-50 border-2 border-slate-100 rounded-4xl font-bold text-slate-900 outline-none focus:border-blue-600 focus:bg-white transition-all resize-none"
                             />
                         </div>
 

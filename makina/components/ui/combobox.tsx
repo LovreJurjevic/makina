@@ -52,7 +52,7 @@ export function SmartSearch({
             {isOpen && (
                 <div className="absolute z-[100] w-full mt-2 bg-white rounded-2xl shadow-2xl border-2 border-slate-100 overflow-hidden">
                     <div className="max-h-60 overflow-y-auto p-2">
-                        {query.length > 0 && !options.find((o: any) => o.label.toLowerCase() === query.toLowerCase()) && onCreate && (
+                        {!options.find((o: any) => o.label.toLowerCase() === query.toLowerCase()) && onCreate && (
                             <button
                                 type="button"
                                 onClick={() => { onCreate(query); setIsOpen(false); }}
@@ -60,8 +60,8 @@ export function SmartSearch({
                             >
                                 <Plus size={16} strokeWidth={3} />
                                 <div className="flex flex-col items-start">
-                                    <span className="text-xs uppercase font-black">Novi Unos</span>
-                                    <span className="text-sm italic">Dodaj "{query}"</span>
+                                    <span className="text-xs uppercase font-black">{label}</span>
+                                    <span className="text-sm italic">Novi unos</span>
                                 </div>
                             </button>
                         )}

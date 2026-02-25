@@ -93,7 +93,7 @@ export default function NewCustomerPage() {
                     <button
                         type="submit"
                         disabled={loading}
-                        className="w-full h-16 mt-4 bg-[#facc15] hover:bg-[#fde047] disabled:bg-slate-100 text-[#1e3a8a] rounded-2xl font-black uppercase tracking-widest shadow-lg shadow-yellow-500/20 transition-all active:scale-[0.98] flex items-center justify-center gap-2 border-none cursor-pointer"
+                        className="w-full h-16 mt-4 bg-[#facc15] hover:bg-[#fde047] disabled:bg-slate-100 text-accent-foreground rounded-2xl font-black uppercase tracking-widest shadow-lg shadow-yellow-500/20 transition-all active:scale-[0.98] flex items-center justify-center gap-2 border-none cursor-pointer"
                     >
                         {loading ? <Loader2 className="animate-spin" size={20} /> : 'SPREMI KLIJENTA'}
                     </button>

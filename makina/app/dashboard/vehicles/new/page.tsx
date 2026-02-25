@@ -5,7 +5,8 @@ import { createClient } from '@/lib/supabase/client'
 import brands from '@/lib/data/brands.json'
 import { SmartSearch } from '@/components/ui/combobox'
 import { createFullVehicleAction } from '../actions'
-import { Check, Zap, X } from 'lucide-react'
+import { Check, Zap, X, ArrowLeft } from 'lucide-react'
+import Link from 'next/link'
 
 export default function SingleCardVehicleForm() {
     const supabase = createClient()
@@ -49,13 +50,20 @@ export default function SingleCardVehicleForm() {
 
     return (
         <div className="max-w-4xl mx-auto pb-20">
+            <Link
+                href="/dashboard"
+                className="flex items-center gap-2 text-slate-400 hover:text-[#1d4ed8] font-black uppercase tracking-widest text-[10px] mb-8 transition-colors group"
+            >
+                <ArrowLeft size={14} className="group-hover:-translate-x-1 transition-transform" />
+                Povratak
+            </Link>
             <form action={createFullVehicleAction} className="bg-white rounded-[3rem] shadow-2xl border-2 border-slate-100 overflow-hidden text-slate-900">
 
                 {/* HEADER */}
                 <div className="bg-slate-900 p-10 text-white flex flex-col md:flex-row justify-between items-center gap-6">
                     <div className="flex-1 w-full text-left">
                         <label className="text-[10px] font-black uppercase tracking-[0.2em] text-blue-400">Registracija</label>
-                        <input required name="registration" placeholder="ZD-000-XX" className="bg-transparent text-5xl font-black uppercase outline-none w-full placeholder:text-slate-800" />
+                        <input required name="registration" placeholder="ZD000XX" className="bg-transparent text-5xl font-black uppercase outline-none w-full placeholder:text-slate-800" />
                     </div>
                     <div className="w-full md:w-72 text-left">
                         <label className="text-[10px] font-black uppercase tracking-[0.2em] text-blue-400">VIN</label>
@@ -80,11 +88,12 @@ export default function SingleCardVehicleForm() {
                             {ui.newClient && (
                                 <div className="p-4 bg-slate-50 rounded-2xl grid grid-cols-2 gap-2 animate-in slide-in-from-top-2 border-2 border-blue-100">
                                     <div className="col-span-2 flex justify-between items-center mb-1">
-                                        <span className="text-[10px] font-black text-blue-600 uppercase font-bold">Novi Klijent</span>
+                                        <span className="text-[10px] font-black text-blue-600 uppercase">Novi Klijent</span>
                                         <button type="button" onClick={() => setUi({ ...ui, newClient: false })}><X size={14} /></button>
                                     </div>
                                     <input name="new_client_name" placeholder="Ime" className="form-input-minimal bg-white" />
                                     <input name="new_client_surname" placeholder="Prezime" className="form-input-minimal bg-white" />
+                                    <input name="new_client_phonebook" placeholder="Ime u imeniku" className="form-input-minimal col-span-2 bg-white" />
                                     <input name="new_client_phone" placeholder="Mobitel" className="form-input-minimal col-span-2 bg-white" />
                                 </div>
                             )}
@@ -103,11 +112,12 @@ export default function SingleCardVehicleForm() {
                             {ui.newCompany && (
                                 <div className="p-4 bg-slate-50 rounded-2xl space-y-2 animate-in slide-in-from-top-2 border-2 border-blue-100">
                                     <div className="flex justify-between items-center mb-1">
-                                        <span className="text-[10px] font-black text-blue-600 uppercase font-bold">Novo Poduzeće</span>
+                                        <span className="text-[10px] font-black text-blue-600 uppercase">Novo Poduzeće</span>
                                         <button type="button" onClick={() => setUi({ ...ui, newCompany: false })}><X size={14} /></button>
                                     </div>
                                     <input name="new_company_oib" placeholder="OIB" className="form-input-minimal bg-white" />
                                     <input name="new_company_name" placeholder="Naziv Firme" className="form-input-minimal bg-white" />
+                                    <input name="new_company_address" placeholder="Adresa" className="form-input-minimal bg-white" />
                                 </div>
                             )}
                         </div>
@@ -127,7 +137,7 @@ export default function SingleCardVehicleForm() {
                                 {selectedBrand && (
                                     <div className="flex items-center gap-2 p-2 bg-blue-50 rounded-xl border border-blue-100 mt-2">
                                         <img src={selectedBrand.image} className="w-8 h-8 object-contain" />
-                                        <span className="text-xs font-black uppercase text-blue-700 font-bold">{selectedBrand.label}</span>
+                                        <span className="text-xs font-black uppercase text-blue-700">{selectedBrand.label}</span>
                                     </div>
                                 )}
                             </div>
@@ -161,7 +171,7 @@ export default function SingleCardVehicleForm() {
                             <Zap size={18} className="text-slate-900 fill-slate-900" />
                             <h3 className="font-black uppercase italic tracking-tighter text-lg">Podaci o motoru</h3>
                         </div>
-                        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 bg-slate-50 p-6 rounded-[2rem]">
+                        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 bg-slate-50 p-6 rounded-4xl">
                             <div className="col-span-2 md:col-span-1">
                                 <SmartSearch
                                     label="Kod Motora"
@@ -187,7 +197,7 @@ export default function SingleCardVehicleForm() {
                                 <input type="hidden" name="engine_code" value={engineCode} />
                             </div>
                             <div>
-                                <label className="text-[10px] font-black uppercase text-slate-400 mb-2 block tracking-widest font-bold">ccm</label>
+                                <label className="text-[10px] font-black uppercase text-slate-400 mb-2 block tracking-widest">ccm</label>
                                 <input
                                     name="displacement"
                                     value={engineSpecs.displacement}
@@ -196,7 +206,7 @@ export default function SingleCardVehicleForm() {
                                 />
                             </div>
                             <div>
-                                <label className="text-[10px] font-black uppercase text-slate-400 mb-2 block tracking-widest font-bold">kW</label>
+                                <label className="text-[10px] font-black uppercase text-slate-400 mb-2 block tracking-widest">kW</label>
                                 <input
                                     name="power"
                                     value={engineSpecs.power}
@@ -205,7 +215,7 @@ export default function SingleCardVehicleForm() {
                                 />
                             </div>
                             <div>
-                                <label className="text-[10px] font-black uppercase text-slate-400 mb-2 block tracking-widest font-bold">Gorivo</label>
+                                <label className="text-[10px] font-black uppercase text-slate-400 mb-2 block tracking-widest">Gorivo</label>
                                 <select
                                     name="fuel"
                                     value={engineSpecs.fuel}

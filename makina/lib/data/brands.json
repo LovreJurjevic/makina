@@ -1,5 +1,83 @@
 [
   {
+    "name": "Volkswagen",
+    "slug": "volkswagen",
+    "image": {
+      "source": "https://www.carlogos.org/logo/Volkswagen-logo-2019-1500x1500.png",
+      "thumb": "https://raw.githubusercontent.com/filippofilip95/car-logos-dataset/master/logos/thumb/volkswagen.png",
+      "optimized": "https://raw.githubusercontent.com/filippofilip95/car-logos-dataset/master/logos/optimized/volkswagen.png",
+      "original": "https://raw.githubusercontent.com/filippofilip95/car-logos-dataset/master/logos/original/volkswagen.png",
+      "localThumb": "./thumb/volkswagen.png",
+      "localOptimized": "./optimized/volkswagen.png",
+      "localOriginal": "./original/volkswagen.png"
+    }
+  },
+  {
+    "name": "BMW",
+    "slug": "bmw",
+    "image": {
+      "source": "https://www.carlogos.org/car-logos/bmw-logo-2020-gray.png",
+      "thumb": "https://raw.githubusercontent.com/filippofilip95/car-logos-dataset/master/logos/thumb/bmw.png",
+      "optimized": "https://raw.githubusercontent.com/filippofilip95/car-logos-dataset/master/logos/optimized/bmw.png",
+      "original": "https://raw.githubusercontent.com/filippofilip95/car-logos-dataset/master/logos/original/bmw.png",
+      "localThumb": "./thumb/bmw.png",
+      "localOptimized": "./optimized/bmw.png",
+      "localOriginal": "./original/bmw.png"
+    }
+  },
+  {
+    "name": "Mercedes-Benz",
+    "slug": "mercedes-benz",
+    "image": {
+      "source": "https://www.carlogos.org/logo/Mercedes-Benz-logo-2011-1920x1080.png",
+      "thumb": "https://raw.githubusercontent.com/filippofilip95/car-logos-dataset/master/logos/thumb/mercedes-benz.png",
+      "optimized": "https://raw.githubusercontent.com/filippofilip95/car-logos-dataset/master/logos/optimized/mercedes-benz.png",
+      "original": "https://raw.githubusercontent.com/filippofilip95/car-logos-dataset/master/logos/original/mercedes-benz.png",
+      "localThumb": "./thumb/mercedes-benz.png",
+      "localOptimized": "./optimized/mercedes-benz.png",
+      "localOriginal": "./original/mercedes-benz.png"
+    }
+  },
+  {
+    "name": "Audi",
+    "slug": "audi",
+    "image": {
+      "source": "https://www.carlogos.org/car-logos/audi-logo-2016-640.png",
+      "thumb": "https://raw.githubusercontent.com/filippofilip95/car-logos-dataset/master/logos/thumb/audi.png",
+      "optimized": "https://raw.githubusercontent.com/filippofilip95/car-logos-dataset/master/logos/optimized/audi.png",
+      "original": "https://raw.githubusercontent.com/filippofilip95/car-logos-dataset/master/logos/original/audi.png",
+      "localThumb": "./thumb/audi.png",
+      "localOptimized": "./optimized/audi.png",
+      "localOriginal": "./original/audi.png"
+    }
+  },
+  {
+    "name": "Renault",
+    "slug": "renault",
+    "image": {
+      "source": "https://www.carlogos.org/logo/Renault-logo-2015-2048x2048.png",
+      "thumb": "https://raw.githubusercontent.com/filippofilip95/car-logos-dataset/master/logos/thumb/renault.png",
+      "optimized": "https://raw.githubusercontent.com/filippofilip95/car-logos-dataset/master/logos/optimized/renault.png",
+      "original": "https://raw.githubusercontent.com/filippofilip95/car-logos-dataset/master/logos/original/renault.png",
+      "localThumb": "./thumb/renault.png",
+      "localOptimized": "./optimized/renault.png",
+      "localOriginal": "./original/renault.png"
+    }
+  },
+  {
+    "name": "Peugeot",
+    "slug": "peugeot",
+    "image": {
+      "source": "https://www.carlogos.org/logo/Peugeot-logo-2010-1920x1080.png",
+      "thumb": "https://raw.githubusercontent.com/filippofilip95/car-logos-dataset/master/logos/thumb/peugeot.png",
+      "optimized": "https://raw.githubusercontent.com/filippofilip95/car-logos-dataset/master/logos/optimized/peugeot.png",
+      "original": "https://raw.githubusercontent.com/filippofilip95/car-logos-dataset/master/logos/original/peugeot.png",
+      "localThumb": "./thumb/peugeot.png",
+      "localOptimized": "./optimized/peugeot.png",
+      "localOriginal": "./original/peugeot.png"
+    }
+  },
+  {
     "name": "9ff",
     "slug": "9ff",
     "image": {
@@ -376,19 +454,7 @@
       "localOriginal": "./original/auburn.png"
     }
   },
-  {
-    "name": "Audi",
-    "slug": "audi",
-    "image": {
-      "source": "https://www.carlogos.org/car-logos/audi-logo-2016-640.png",
-      "thumb": "https://raw.githubusercontent.com/filippofilip95/car-logos-dataset/master/logos/thumb/audi.png",
-      "optimized": "https://raw.githubusercontent.com/filippofilip95/car-logos-dataset/master/logos/optimized/audi.png",
-      "original": "https://raw.githubusercontent.com/filippofilip95/car-logos-dataset/master/logos/original/audi.png",
-      "localThumb": "./thumb/audi.png",
-      "localOptimized": "./optimized/audi.png",
-      "localOriginal": "./original/audi.png"
-    }
-  },
+
   {
     "name": "Audi Sport",
     "slug": "audi-sport",
@@ -608,19 +674,6 @@
       "localThumb": "./thumb/bizzarrini.png",
       "localOptimized": "./optimized/bizzarrini.png",
       "localOriginal": "./original/bizzarrini.jpg"
-    }
-  },
-  {
-    "name": "BMW",
-    "slug": "bmw",
-    "image": {
-      "source": "https://www.carlogos.org/car-logos/bmw-logo-2020-gray.png",
-      "thumb": "https://raw.githubusercontent.com/filippofilip95/car-logos-dataset/master/logos/thumb/bmw.png",
-      "optimized": "https://raw.githubusercontent.com/filippofilip95/car-logos-dataset/master/logos/optimized/bmw.png",
-      "original": "https://raw.githubusercontent.com/filippofilip95/car-logos-dataset/master/logos/original/bmw.png",
-      "localThumb": "./thumb/bmw.png",
-      "localOptimized": "./optimized/bmw.png",
-      "localOriginal": "./original/bmw.png"
     }
   },
   {
@@ -3132,19 +3185,7 @@
       "localOriginal": "./original/mercedes-amg.png"
     }
   },
-  {
-    "name": "Mercedes-Benz",
-    "slug": "mercedes-benz",
-    "image": {
-      "source": "https://www.carlogos.org/logo/Mercedes-Benz-logo-2011-1920x1080.png",
-      "thumb": "https://raw.githubusercontent.com/filippofilip95/car-logos-dataset/master/logos/thumb/mercedes-benz.png",
-      "optimized": "https://raw.githubusercontent.com/filippofilip95/car-logos-dataset/master/logos/optimized/mercedes-benz.png",
-      "original": "https://raw.githubusercontent.com/filippofilip95/car-logos-dataset/master/logos/original/mercedes-benz.png",
-      "localThumb": "./thumb/mercedes-benz.png",
-      "localOptimized": "./optimized/mercedes-benz.png",
-      "localOriginal": "./original/mercedes-benz.png"
-    }
-  },
+  
   {
     "name": "Mercury",
     "slug": "mercury",
@@ -3574,19 +3615,7 @@
       "localOriginal": "./original/peterbilt.png"
     }
   },
-  {
-    "name": "Peugeot",
-    "slug": "peugeot",
-    "image": {
-      "source": "https://www.carlogos.org/logo/Peugeot-logo-2010-1920x1080.png",
-      "thumb": "https://raw.githubusercontent.com/filippofilip95/car-logos-dataset/master/logos/thumb/peugeot.png",
-      "optimized": "https://raw.githubusercontent.com/filippofilip95/car-logos-dataset/master/logos/optimized/peugeot.png",
-      "original": "https://raw.githubusercontent.com/filippofilip95/car-logos-dataset/master/logos/original/peugeot.png",
-      "localThumb": "./thumb/peugeot.png",
-      "localOptimized": "./optimized/peugeot.png",
-      "localOriginal": "./original/peugeot.png"
-    }
-  },
+  
   {
     "name": "PGO",
     "slug": "pgo",
@@ -3795,19 +3824,7 @@
       "localOriginal": "./original/ranz.png"
     }
   },
-  {
-    "name": "Renault",
-    "slug": "renault",
-    "image": {
-      "source": "https://www.carlogos.org/logo/Renault-logo-2015-2048x2048.png",
-      "thumb": "https://raw.githubusercontent.com/filippofilip95/car-logos-dataset/master/logos/thumb/renault.png",
-      "optimized": "https://raw.githubusercontent.com/filippofilip95/car-logos-dataset/master/logos/optimized/renault.png",
-      "original": "https://raw.githubusercontent.com/filippofilip95/car-logos-dataset/master/logos/original/renault.png",
-      "localThumb": "./thumb/renault.png",
-      "localOptimized": "./optimized/renault.png",
-      "localOriginal": "./original/renault.png"
-    }
-  },
+  
   {
     "name": "Renault Samsung",
     "slug": "renault-samsung",
@@ -4705,19 +4722,7 @@
       "localOriginal": "./original/vlf.png"
     }
   },
-  {
-    "name": "Volkswagen",
-    "slug": "volkswagen",
-    "image": {
-      "source": "https://www.carlogos.org/logo/Volkswagen-logo-2019-1500x1500.png",
-      "thumb": "https://raw.githubusercontent.com/filippofilip95/car-logos-dataset/master/logos/thumb/volkswagen.png",
-      "optimized": "https://raw.githubusercontent.com/filippofilip95/car-logos-dataset/master/logos/optimized/volkswagen.png",
-      "original": "https://raw.githubusercontent.com/filippofilip95/car-logos-dataset/master/logos/original/volkswagen.png",
-      "localThumb": "./thumb/volkswagen.png",
-      "localOptimized": "./optimized/volkswagen.png",
-      "localOriginal": "./original/volkswagen.png"
-    }
-  },
+  
   {
     "name": "Volvo",
     "slug": "volvo",
