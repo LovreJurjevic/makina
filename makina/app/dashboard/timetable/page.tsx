@@ -74,18 +74,33 @@ export default function TimetablePage() {
     }
 
     const handleAddReservation = async () => {
+        // 1. Get current user ID for RLS compliance
+        const { data: { user } } = await supabase.auth.getUser();
+
+        if (!user) {
+            console.error("User not authenticated");
+            return;
+        }
+
         const { error } = await supabase.from('reservations').insert([{
             scheduled_date: format(selectedDate, 'yyyy-MM-dd'),
             scheduled_time: newRes.time,
-            vehicle_id: newRes.vehicle_id,
-            client_id: newRes.client_id,
-            service_description: newRes.desc
-        }])
-        if (!error) {
-            setShowAddModal(false)
-            fetchCounts()
+            // Ensure these match your actual DB column names
+            client_id: parseInt(newRes.client_id), // Clients ID is usually an INT
+            service_description: newRes.desc,
+            user_id: user.id // Required by your RLS policy
+        }]);
+
+        if (error) {
+            console.error("Error saving reservation:", error.message);
+            alert(`Greška: ${error.message}`); // Show actual DB error to user
+        } else {
+            setShowAddModal(false);
+            fetchCounts();
+            // Clear form
+            setNewRes({ vehicle_id: '', client_id: '', time: '08:00', desc: '' });
         }
-    }
+    };
 
     const days = eachDayOfInterval({ start: startOfMonth(currentMonth), end: endOfMonth(currentMonth) })
     const startDay = getDay(startOfMonth(currentMonth))
@@ -225,36 +240,27 @@ export default function TimetablePage() {
                                     options={dbData.clients.map((c: any) => ({ id: c.id, label: `${c.name} ${c.surname}`, subLabel: c.phone_number }))}
                                     onSelect={(opt: any) => setNewRes({ ...newRes, client_id: opt.id })}
                                 />
-                                <SmartSearch
-                                    label="Vozilo"
-                                    options={dbData.vehicles.map((v: any) => ({ 
-                                        id: v.id, 
-                                        label: `${v.registration} — ${v.make} ${v.model}`, 
-                                        subLabel: v.clients ? `${v.clients.name} ${v.clients.surname}` : 'Nema vlasnika'
-                                    }))}
-                                    onSelect={(opt: any) => setNewRes({ ...newRes, vehicle_id: opt.id })}
-                                />
                                 <div className="grid grid-cols-2 gap-4">
                                     <div>
                                         <div>
                                             <label className="text-[10px] font-black uppercase text-slate-400 mb-2 block tracking-widest">Vrijeme</label>
-                                            <select 
+                                            <select
                                                 className="w-full h-14 bg-slate-50 border-2 border-slate-100 rounded-2xl px-4 font-black appearance-none cursor-pointer hover:border-blue-200 transition-colors"
-                                                value={newRes.time} 
+                                                value={newRes.time}
                                                 onChange={e => setNewRes({ ...newRes, time: e.target.value })}
                                             >
                                                 {/* Generates slots from 07:00 to 19:00 */}
                                                 {Array.from({ length: 13 }).map((_, i) => {
-                                                const hour = (i + 7).toString().padStart(2, '0');
-                                                return (
-                                                    <React.Fragment key={hour}>
-                                                    <option value={`${hour}:00`}>{hour}:00</option>
-                                                    <option value={`${hour}:30`}>{hour}:30</option>
-                                                    </React.Fragment>
-                                                );
+                                                    const hour = (i + 7).toString().padStart(2, '0');
+                                                    return (
+                                                        <React.Fragment key={hour}>
+                                                            <option value={`${hour}:00`}>{hour}:00</option>
+                                                            <option value={`${hour}:30`}>{hour}:30</option>
+                                                        </React.Fragment>
+                                                    );
                                                 })}
                                             </select>
-                                                </div>
+                                        </div>
                                     </div>
                                     <div className="col-span-2">
                                         <label className="text-[10px] font-black uppercase text-slate-400 mb-2 block tracking-widest">Opis Radova</label>

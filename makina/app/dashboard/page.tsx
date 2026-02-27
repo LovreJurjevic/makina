@@ -8,6 +8,7 @@ import {
     History
 } from "lucide-react";
 import Link from "next/link";
+import GlobalSearch from "@/components/GlobalSearch";
 
 export default async function DashboardPage() {
     const supabase = await createClient();
@@ -29,12 +30,7 @@ export default async function DashboardPage() {
 
             </div>
             <div className="relative group w-full">
-                <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-[#1d4ed8] transition-colors" size={18} />
-                <input
-                    type="text"
-                    placeholder="PRETRAŽI BAZU PODATAKA..."
-                    className="w-full h-14 pl-12 pr-4 bg-white border-2 border-slate-200 rounded-2xl font-black uppercase tracking-widest text-sm focus:border-[#1d4ed8] outline-none transition-all shadow-sm"
-                />
+                <GlobalSearch />
             </div>
 
             {/* 2. The Quick Access Menu (The "Big Three") */}
@@ -62,35 +58,7 @@ export default async function DashboardPage() {
                 />
             </div>
 
-            {/* 3. Status Overview Section */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mt-12">
-                {/* Active Shop Status */}
-                <div className="bg-white p-8 rounded-3xl border-2 border-slate-100 shadow-sm">
-                    <div className="flex items-center gap-2 mb-6">
-                        <Activity className="text-[#1d4ed8]" size={20} />
-                        <h2 className="font-black uppercase tracking-widest text-xs text-slate-400">Trenutno u radioni</h2>
-                    </div>
-                    <div className="space-y-4">
-                        {/* This will be a map of active vehicles later */}
-                        <p className="text-slate-300 italic text-sm py-4 border-2 border-dashed border-slate-50 rounded-2xl text-center">
-                            Nema aktivnih vozila na dizalicama.
-                        </p>
-                    </div>
-                </div>
 
-                {/* Recent History */}
-                <div className="bg-white p-8 rounded-3xl border-2 border-slate-100 shadow-sm">
-                    <div className="flex items-center gap-2 mb-6">
-                        <History className="text-slate-400" size={20} />
-                        <h2 className="font-black uppercase tracking-widest text-xs text-slate-400">Zadnje završeno</h2>
-                    </div>
-                    <div className="space-y-3">
-                        <p className="text-slate-300 italic text-sm py-4 border-2 border-dashed border-slate-50 rounded-2xl text-center">
-                            Nema nedavnih završenih radnih naloga.
-                        </p>
-                    </div>
-                </div>
-            </div>
         </div>
     );
 }

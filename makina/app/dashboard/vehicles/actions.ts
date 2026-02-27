@@ -65,3 +65,40 @@ export async function createFullVehicleAction(formData: FormData) {
     revalidatePath('/dashboard')
     redirect('/dashboard')
 }
+export async function updateVehicleAction(formData: FormData) {
+    const supabase = await createClient()
+    const vehicleId = formData.get('vehicle_id') as string
+
+    // 1. Update Engine data (or find/create)
+    const engineCode = formData.get('engine_code') as string
+    const { data: engine } = await supabase
+        .from('engines')
+        .upsert({
+            code: engineCode,
+            displacement: formData.get('displacement'),
+            power: formData.get('power'),
+            fuel: formData.get('fuel')
+        }, { onConflict: 'code' })
+        .select()
+        .single()
+
+    // 2. Update Vehicle data
+    const { error } = await supabase
+        .from('vehicles')
+        .update({
+            registration: formData.get('registration'),
+            vin: formData.get('vin'),
+            make: formData.get('make'),
+            model: formData.get('model'),
+            year: formData.get('year'),
+            distance: formData.get('distance'),
+            engine: engine?.id,
+            client: formData.get('client_id'),
+        })
+        .eq('id', vehicleId)
+
+    if (error) throw new Error(error.message)
+
+    revalidatePath(`/dashboard/vehicles/${vehicleId}`)
+    redirect(`/dashboard/vehicles/${vehicleId}`)
+}

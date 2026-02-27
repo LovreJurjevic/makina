@@ -42,7 +42,7 @@ export default async function DashboardLayout({
                     <NavItem href="/dashboard" icon={<LayoutDashboard size={20} />} label="Početna stranica" />
                     <NavItem href="/dashboard/timetable" icon={<CalendarIcon size={20} />} label="Kalendar" />
                     <NavItem href="/dashboard/vehicles" icon={<Car size={20} />} label="Vozila" />
-                    <NavItem href="/dashboard/nalozi" icon={<ClipboardList size={20} />} label="Radni Nalozi" />
+                    <NavItem href="/dashboard/orders" icon={<ClipboardList size={20} />} label="Radni Nalozi" />
                 </nav>
 
                 <div className="p-4 border-t border-blue-600/50">
