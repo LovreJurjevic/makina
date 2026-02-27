@@ -27,7 +27,7 @@ export default function VehicleDetailsPage() {
         async function fetchVehicleData() {
             const { data: vData } = await supabase
                 .from('vehicles')
-                .select('*, clients(*), engines(*)')
+                .select('*, clients(*), engines(*),companies(*)')
                 .eq('id', id)
                 .single()
 
@@ -92,7 +92,7 @@ export default function VehicleDetailsPage() {
                             </h1>
                         </div>
 
-                        {/* Owner & Mileage Info */}
+                        {/* Owner & Company Info */}
                         <div className="p-6 space-y-4">
                             <div className="p-6 bg-slate-50 rounded-3xl border border-slate-100">
                                 <div className="flex items-center gap-2 mb-3 text-slate-400">
@@ -103,15 +103,29 @@ export default function VehicleDetailsPage() {
                                     {vehicle.clients?.name} {vehicle.clients?.surname}
                                 </p>
                                 <p className="text-sm font-bold text-slate-500 mt-1">{vehicle.clients?.phone_number}</p>
-
-                                {vehicle.clients?.company_name && (
-                                    <div className="mt-4 pt-4 border-t border-slate-200 flex items-center gap-3">
-                                        <Building2 size={18} className="text-blue-600" />
-                                        <p className="font-black text-xs text-slate-900 uppercase italic tracking-tight">{vehicle.clients.company_name}</p>
-                                    </div>
-                                )}
                             </div>
 
+                            {/* NEW SECTION: COMPANY INFO */}
+                            <div className="p-6 bg-white rounded-3xl border-2 border-slate-100">
+                                <div className="flex items-center gap-2 mb-3 text-slate-400">
+                                    <Building2 size={14} />
+                                    <span className="text-[10px] font-black uppercase tracking-widest">Tvrtka</span>
+                                </div>
+                                {vehicle.companies?.name ? (
+                                    <div>
+                                        <p className="font-black text-xl text-blue-600 leading-tight uppercase italic">
+                                            {vehicle.companies.name}
+                                        </p>
+                                        <p className="text-xl leading-tight uppercase italic">
+                                            {"OIB: " + vehicle.companies.oib}
+                                        </p>
+                                    </div>
+                                ) : (
+                                    <p className="font-bold text-sm text-slate-400 italic">
+                                        Nije vezano uz tvrtku
+                                    </p>
+                                )}
+                            </div>
                         </div>
                     </div>
 

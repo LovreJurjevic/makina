@@ -8,6 +8,7 @@ import {
     LogOut,
     Plus,
     Calendar as CalendarIcon,
+    User,
 } from "lucide-react";
 
 import Link from "next/link";
@@ -42,6 +43,7 @@ export default async function DashboardLayout({
                     <NavItem href="/dashboard" icon={<LayoutDashboard size={20} />} label="Početna stranica" />
                     <NavItem href="/dashboard/timetable" icon={<CalendarIcon size={20} />} label="Kalendar" />
                     <NavItem href="/dashboard/vehicles" icon={<Car size={20} />} label="Vozila" />
+                    <NavItem href="/dashboard/clients" icon={<User size={20} />} label="Klijenti" />
                     <NavItem href="/dashboard/orders" icon={<ClipboardList size={20} />} label="Radni Nalozi" />
                 </nav>
 

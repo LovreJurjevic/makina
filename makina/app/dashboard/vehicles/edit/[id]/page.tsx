@@ -6,7 +6,7 @@ import { createClient } from '@/lib/supabase/client'
 import brands from '@/lib/data/brands.json'
 import { SmartSearch } from '@/components/ui/combobox'
 import { updateVehicleAction } from '../../actions'
-import { Zap, ArrowLeft, Save, User, Gauge, Hash, Calendar, Plus, X, UserPlus } from 'lucide-react'
+import { Zap, ArrowLeft, Save, User, Building2, Plus, X, UserPlus } from 'lucide-react'
 import Link from 'next/link'
 
 export default function EditVehiclePage() {
@@ -14,31 +14,37 @@ export default function EditVehiclePage() {
     const supabase = createClient()
 
     const [loading, setLoading] = useState(true)
-    const [dbData, setDbData] = useState<any>({ clients: [], engines: [], vehicles: [] })
+    // Fetching companies along with other data
+    const [dbData, setDbData] = useState<any>({ clients: [], companies: [], engines: [], vehicles: [] })
 
     // Selection States
     const [selectedClientId, setSelectedClientId] = useState<string>('')
+    // NEW STATE: Company OIB
+    const [selectedCompanyOib, setSelectedCompanyOib] = useState<string>('')
     const [engineCode, setEngineCode] = useState<string>('')
     const [selectedBrand, setSelectedBrand] = useState<any>(null)
     const [selectedModel, setSelectedModel] = useState('')
     const [engineSpecs, setEngineSpecs] = useState({ displacement: '', power: '', fuel: 'Diesel' })
     const [vehicle, setVehicle] = useState<any>(null)
 
-    // UI States for New Client
-    const [isCreatingClient, setIsCreatingClient] = useState(false)
+    // UI States for New Client/Company
+    const [ui, setUi] = useState({ newClient: false, newCompany: false })
     const [newClient, setNewClient] = useState({ name: '', surname: '', phone: '' })
 
     useEffect(() => {
         async function loadData() {
-            const [cl, en, ve, currentVe] = await Promise.all([
+            // Added fetch for companies
+            const [cl, co, en, ve, currentVe] = await Promise.all([
                 supabase.from('clients').select('*'),
+                supabase.from('companies').select('*'),
                 supabase.from('engines').select('*'),
                 supabase.from('vehicles').select('make, model'),
-                supabase.from('vehicles').select('*, clients(*), engines(*)').eq('id', id).single()
+                supabase.from('vehicles').select('*, clients(*), engines(*), companies(*)').eq('id', id).single()
             ])
 
             setDbData({
                 clients: cl.data || [],
+                companies: co.data || [],
                 engines: en.data || [],
                 vehicles: ve.data || []
             })
@@ -47,6 +53,8 @@ export default function EditVehiclePage() {
                 const v = currentVe.data
                 setVehicle(v)
                 setSelectedClientId(v.client_id || '')
+                // Set initial company OIB from vehicle data
+                setSelectedCompanyOib(v.company_oib || '')
                 setEngineCode(v.engines?.code || '')
                 setSelectedModel(v.model || '')
                 setEngineSpecs({
@@ -62,21 +70,6 @@ export default function EditVehiclePage() {
         }
         loadData()
     }, [id, supabase])
-
-    const handleCreateClient = async () => {
-        if (!newClient.name) return
-        const { data, error } = await supabase
-            .from('clients')
-            .insert([{ name: newClient.name, surname: newClient.surname, phone_number: newClient.phone }])
-            .select()
-            .single()
-
-        if (data) {
-            setDbData({ ...dbData, clients: [data, ...dbData.clients] })
-            setSelectedClientId(data.id)
-            setIsCreatingClient(false)
-        }
-    }
 
     if (loading) return <div className="p-20 text-center font-black animate-pulse text-slate-300 uppercase italic">Učitavanje...</div>
 
@@ -97,125 +90,169 @@ export default function EditVehiclePage() {
                 </div>
             </div>
 
-            <form action={updateVehicleAction} className="bg-white rounded-[2.5rem] shadow-2xl border-2 border-slate-900 overflow-hidden">
+            {/* FORM CONTAINER WITH NEW STYLING */}
+            <form action={updateVehicleAction} className="bg-white rounded-[3rem] shadow-2xl border-2 border-slate-100 overflow-hidden text-slate-900">
                 <input type="hidden" name="vehicle_id" value={id} />
 
-                {/* HEADER AREA */}
-                <div className="bg-slate-900 p-10 text-white grid grid-cols-1 md:grid-cols-2 gap-10">
-                    <div className="space-y-1">
-                        <label className="text-[10px] font-black uppercase tracking-[0.3em] text-blue-400">Registracija</label>
-                        <input required name="registration" defaultValue={vehicle?.registration || ''} className="bg-transparent text-5xl font-black uppercase outline-none w-full focus:text-blue-400 transition-colors" />
+                {/* HEADER AREA - IDENTICAL TO NEW VEHICLE FORM */}
+                <div className="bg-slate-900 p-10 text-white flex flex-col md:flex-row justify-between items-center gap-6">
+                    <div className="flex-1 w-full text-left">
+                        <label className="text-[10px] font-black uppercase tracking-[0.2em] text-blue-400">Registracija</label>
+                        <input required name="registration" defaultValue={vehicle?.registration || ''} className="bg-transparent text-5xl font-black uppercase outline-none w-full placeholder:text-slate-800" />
                     </div>
-                    <div className="flex flex-col justify-end space-y-1">
-                        <label className="text-[10px] font-black uppercase tracking-[0.3em] text-blue-400">Šasija (VIN)</label>
-                        <input name="vin" defaultValue={vehicle?.vin || ''} className="bg-transparent text-xl font-mono font-bold uppercase outline-none w-full border-b border-slate-700 pb-2 focus:border-blue-500 transition-colors" />
+                    <div className="w-full md:w-72 text-left">
+                        <label className="text-[10px] font-black uppercase tracking-[0.2em] text-blue-400">VIN</label>
+                        <input name="vin" defaultValue={vehicle?.vin || ''} className="bg-transparent text-xl font-mono font-bold uppercase outline-none w-full border-b border-slate-700 pb-1" />
                     </div>
                 </div>
 
-                <div className="p-10 space-y-12">
+                <div className="p-10 space-y-12 text-left">
 
-                    {/* OWNER SECTION WITH CREATE OPTION */}
-                    <div className="p-8 bg-slate-50 rounded-[2rem] border border-slate-100">
-                        <div className="flex justify-between items-center mb-6">
-                            <div className="flex items-center gap-3">
-                                <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center text-white">
-                                    <User size={16} />
+                    {/* CLIENT & COMPANY SECTION */}
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
+                        <div className="space-y-4">
+                            <SmartSearch
+                                label="Klijent (Vlasnik)"
+                                placeholder="Traži..."
+                                initialValue={vehicle?.clients ? `${vehicle.clients.name} ${vehicle.clients.surname}` : ''}
+                                options={dbData.clients.map((c: any) => ({ id: c.id, label: c.phonebook_name || `${c.name} ${c.surname}`, subLabel: c.phone_number }))}
+                                onSelect={(opt: any) => setSelectedClientId(opt.id)}
+                                onCreate={() => setUi({ ...ui, newClient: true })}
+                            />
+                            <input type="hidden" name="client_id" value={selectedClientId || vehicle?.client_id || ''} />
+                            <input type="hidden" name="is_new_client" value={ui.newClient.toString()} />
+                            {ui.newClient && (
+                                <div className="p-4 bg-slate-50 rounded-2xl grid grid-cols-2 gap-2 animate-in slide-in-from-top-2 border-2 border-blue-100">
+                                    <div className="col-span-2 flex justify-between items-center mb-1">
+                                        <span className="text-[10px] font-black text-blue-600 uppercase">Novi Klijent</span>
+                                        <button type="button" onClick={() => setUi({ ...ui, newClient: false })}><X size={14} /></button>
+                                    </div>
+                                    <input name="new_client_name" placeholder="Ime" className="form-input-minimal bg-white" />
+                                    <input name="new_client_surname" placeholder="Prezime" className="form-input-minimal bg-white" />
+                                    <input name="new_client_phonebook" placeholder="Ime u imeniku" className="form-input-minimal col-span-2 bg-white" />
+                                    <input name="new_client_phone" placeholder="Mobitel" className="form-input-minimal col-span-2 bg-white" />
                                 </div>
-                                <h3 className="font-black uppercase text-xs tracking-widest text-slate-900 italic">Vlasnik</h3>
-                            </div>
-                            {!isCreatingClient && (
-                                <button
-                                    type="button"
-                                    onClick={() => setIsCreatingClient(true)}
-                                    className="flex items-center gap-2 text-[9px] font-black uppercase bg-slate-900 text-white px-4 py-2 rounded-full hover:bg-blue-600 transition-all"
-                                >
-                                    <Plus size={12} /> Novi Klijent
-                                </button>
                             )}
                         </div>
 
-                        {isCreatingClient ? (
-                            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 animate-in slide-in-from-top-2 duration-300">
-                                <input placeholder="IME" value={newClient.name} onChange={e => setNewClient({ ...newClient, name: e.target.value })} className="h-12 px-4 bg-white border-2 border-slate-200 rounded-xl font-bold uppercase text-xs outline-none focus:border-blue-500" />
-                                <input placeholder="PREZIME" value={newClient.surname} onChange={e => setNewClient({ ...newClient, surname: e.target.value })} className="h-12 px-4 bg-white border-2 border-slate-200 rounded-xl font-bold uppercase text-xs outline-none focus:border-blue-500" />
-                                <div className="flex gap-2">
-                                    <input placeholder="MOBITEL" value={newClient.phone} onChange={e => setNewClient({ ...newClient, phone: e.target.value })} className="flex-1 h-12 px-4 bg-white border-2 border-slate-200 rounded-xl font-bold uppercase text-xs outline-none focus:border-blue-500" />
-                                    <button type="button" onClick={handleCreateClient} className="bg-blue-600 text-white p-3 rounded-xl hover:bg-slate-900 transition-colors"><UserPlus size={18} /></button>
-                                    <button type="button" onClick={() => setIsCreatingClient(false)} className="bg-slate-200 text-slate-500 p-3 rounded-xl hover:bg-red-500 hover:text-white transition-colors"><X size={18} /></button>
+                        <div className="space-y-4">
+                            <SmartSearch
+                                label="Poduzeće"
+                                placeholder="OIB ili Naziv..."
+                                initialValue={dbData.companies.find((c: any) => c.oib === selectedCompanyOib)?.name || ''}
+                                options={dbData.companies.map((c: any) => ({ id: c.oib, label: c.name, subLabel: c.oib }))}
+                                onSelect={(opt: any) => setSelectedCompanyOib(opt.id)}
+                                onCreate={() => setUi({ ...ui, newCompany: true })}
+                            />
+                            <input type="hidden" name="company_oib" value={selectedCompanyOib} />
+                            <input type="hidden" name="is_new_company" value={ui.newCompany.toString()} />
+                            {ui.newCompany && (
+                                <div className="p-4 bg-slate-50 rounded-2xl space-y-2 animate-in slide-in-from-top-2 border-2 border-blue-100">
+                                    <div className="flex justify-between items-center mb-1">
+                                        <span className="text-[10px] font-black text-blue-600 uppercase">Novo Poduzeće</span>
+                                        <button type="button" onClick={() => setUi({ ...ui, newCompany: false })}><X size={14} /></button>
+                                    </div>
+                                    <input name="new_company_oib" placeholder="OIB" className="form-input-minimal bg-white" />
+                                    <input name="new_company_name" placeholder="Naziv Firme" className="form-input-minimal bg-white" />
+                                    <input name="new_company_address" placeholder="Adresa" className="form-input-minimal bg-white" />
+                                </div>
+                            )}
+                        </div>
+                    </div>
+
+                    {/* VEHICLE DETAILS */}
+                    <div className="pt-10 border-t border-slate-100">
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+                            <div className="space-y-2">
+                                <SmartSearch
+                                    label="Marka Vozila"
+                                    initialValue={vehicle?.make || ''}
+                                    options={brands.map(b => ({ id: b.slug, label: b.name, image: b.image.thumb }))}
+                                    onSelect={(opt: any) => setSelectedBrand(opt)}
+                                />
+                                <input type="hidden" name="make" value={selectedBrand?.label || vehicle?.make || ''} />
+                            </div>
+
+                            <div className="space-y-2">
+                                <SmartSearch
+                                    label="Model"
+                                    initialValue={selectedModel || ''}
+                                    options={modelOptions}
+                                    onSelect={(opt: any) => setSelectedModel(opt.label)}
+                                />
+                                <input type="hidden" name="model" value={selectedModel || ''} />
+                            </div>
+
+                            <div className="grid grid-cols-2 gap-4">
+                                <div>
+                                    <label className="text-[10px] font-black uppercase text-slate-400 mb-2 block tracking-widest">Godište</label>
+                                    <input name="year" type="number" defaultValue={vehicle?.year || ''} className="form-input-minimal h-14" />
+                                </div>
+                                <div>
+                                    <label className="text-[10px] font-black uppercase text-slate-400 mb-2 block tracking-widest">KM</label>
+                                    <input name="distance" type="number" defaultValue={vehicle?.distance || ''} className="form-input-minimal h-14" />
                                 </div>
                             </div>
-                        ) : (
-                            <SmartSearch
-                                label="Promijeni Klijenta"
-                                placeholder="Traži..."
-                                initialValue={vehicle?.clients ? `${vehicle.clients.name} ${vehicle.clients.surname}` : ''}
-                                options={dbData.clients.map((c: any) => ({ id: c.id, label: `${c.name} ${c.surname}`, subLabel: c.phone_number }))}
-                                onSelect={(opt: any) => setSelectedClientId(opt.id)}
-                                onCreate={(val: string) => {
-                                    setIsCreatingClient(true);
-                                    setNewClient({ ...newClient, name: val.split(' ')[0] || '', surname: val.split(' ')[1] || '' })
-                                }}
-                            />
-                        )}
-                        <input type="hidden" name="client_id" value={selectedClientId || vehicle?.client_id || ''} />
-                    </div>
-
-                    {/* VEHICLE TECH DATA */}
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-8 pt-4">
-                        <div className="space-y-2">
-                            <SmartSearch
-                                label="Marka"
-                                initialValue={vehicle?.make || ''}
-                                options={brands.map(b => ({ id: b.slug, label: b.name, image: b.image.thumb }))}
-                                onSelect={(opt: any) => setSelectedBrand(opt)}
-                            />
-                            <input type="hidden" name="make" value={selectedBrand?.label || vehicle?.make || ''} />
-                        </div>
-
-                        <div className="space-y-2">
-                            <SmartSearch
-                                label="Model"
-                                initialValue={selectedModel || ''}
-                                options={modelOptions}
-                                onSelect={(opt: any) => setSelectedModel(opt.label)}
-                            />
-                            <input type="hidden" name="model" value={selectedModel || ''} />
-                        </div>
-
-                        <div className="grid grid-cols-2 gap-4">
-                            <div>
-                                <label className="text-[10px] font-black uppercase text-slate-400 mb-2 block tracking-widest">Godište</label>
-                                <input name="year" type="number" defaultValue={vehicle?.year || ''} className="w-full h-14 px-4 bg-slate-50 border-2 border-slate-100 rounded-2xl font-bold focus:border-blue-500 outline-none" />
-                            </div>
-                            <div>
-                                <label className="text-[10px] font-black uppercase text-slate-400 mb-2 block tracking-widest">KM</label>
-                                <input name="distance" type="number" defaultValue={vehicle?.distance || ''} className="w-full h-14 px-4 bg-slate-50 border-2 border-slate-100 rounded-2xl font-bold focus:border-blue-500 outline-none" />
-                            </div>
                         </div>
                     </div>
 
-                    {/* ENGINE DATA */}
+                    {/* ENGINE SECTION - MATCHING NEW FORM STYLE */}
                     <div className="pt-10 border-t border-slate-100">
-                        <div className="flex items-center gap-3 mb-8">
-                            <div className="w-10 h-10 bg-slate-900 text-white rounded-xl flex items-center justify-center"><Zap size={20} fill="currentColor" /></div>
-                            <h3 className="font-black uppercase italic text-xl tracking-tighter">Specifikacija Motora</h3>
+                        <div className="flex items-center gap-2 mb-6">
+                            <Zap size={18} className="text-slate-900 fill-slate-900" />
+                            <h3 className="font-black uppercase italic tracking-tighter text-lg">Podaci o motoru</h3>
                         </div>
-                        <div className="grid grid-cols-2 md:grid-cols-4 gap-6 bg-slate-900 p-8 rounded-[2.5rem] text-white">
-                            <div>
-                                <label className="text-[9px] font-black uppercase text-blue-400 mb-2 block tracking-widest">Kod Motora</label>
-                                <input name="engine_code" value={engineCode || ''} onChange={e => setEngineCode(e.target.value.toUpperCase())} className="w-full h-12 px-4 bg-slate-800 border-2 border-slate-700 rounded-xl font-bold uppercase outline-none focus:border-blue-500 transition-all" />
+                        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 bg-slate-50 p-6 rounded-4xl">
+                            <div className="col-span-2 md:col-span-1">
+                                <SmartSearch
+                                    label="Kod Motora"
+                                    initialValue={engineCode || ''}
+                                    options={dbData.engines.map((e: any) => ({
+                                        id: e.code,
+                                        label: e.code,
+                                        subLabel: `${e.displacement} ccm`,
+                                        displacement: e.displacement,
+                                        power: e.power,
+                                        fuel: e.fuel
+                                    }))}
+                                    onSelect={(opt: any) => {
+                                        setEngineCode(opt.label);
+                                        setEngineSpecs({
+                                            displacement: opt.displacement?.toString() || '',
+                                            power: opt.power?.toString() || '',
+                                            fuel: opt.fuel || 'Diesel'
+                                        });
+                                    }}
+                                    onCreate={(val: string) => setEngineCode(val.toUpperCase())}
+                                />
+                                <input type="hidden" name="engine_code" value={engineCode} />
                             </div>
                             <div>
-                                <label className="text-[9px] font-black uppercase text-blue-400 mb-2 block tracking-widest">Zapremnina</label>
-                                <input name="displacement" value={engineSpecs.displacement || ''} onChange={e => setEngineSpecs({ ...engineSpecs, displacement: e.target.value })} className="w-full h-12 px-4 bg-slate-800 border-2 border-slate-700 rounded-xl font-bold outline-none focus:border-blue-500" />
+                                <label className="text-[10px] font-black uppercase text-slate-400 mb-2 block tracking-widest">ccm</label>
+                                <input
+                                    name="displacement"
+                                    value={engineSpecs.displacement}
+                                    onChange={(e) => setEngineSpecs({ ...engineSpecs, displacement: e.target.value })}
+                                    className="form-input-minimal h-12 bg-white"
+                                />
                             </div>
                             <div>
-                                <label className="text-[9px] font-black uppercase text-blue-400 mb-2 block tracking-widest">Snaga (kW)</label>
-                                <input name="power" value={engineSpecs.power || ''} onChange={e => setEngineSpecs({ ...engineSpecs, power: e.target.value })} className="w-full h-12 px-4 bg-slate-800 border-2 border-slate-700 rounded-xl font-bold outline-none focus:border-blue-500" />
+                                <label className="text-[10px] font-black uppercase text-slate-400 mb-2 block tracking-widest">kW</label>
+                                <input
+                                    name="power"
+                                    value={engineSpecs.power}
+                                    onChange={(e) => setEngineSpecs({ ...engineSpecs, power: e.target.value })}
+                                    className="form-input-minimal h-12 bg-white"
+                                />
                             </div>
                             <div>
-                                <label className="text-[9px] font-black uppercase text-blue-400 mb-2 block tracking-widest">Gorivo</label>
-                                <select name="fuel" value={engineSpecs.fuel || 'Diesel'} onChange={e => setEngineSpecs({ ...engineSpecs, fuel: e.target.value })} className="w-full h-12 px-4 bg-slate-800 border-2 border-slate-700 rounded-xl font-bold outline-none focus:border-blue-500 appearance-none">
+                                <label className="text-[10px] font-black uppercase text-slate-400 mb-2 block tracking-widest">Gorivo</label>
+                                <select
+                                    name="fuel"
+                                    value={engineSpecs.fuel || 'Diesel'}
+                                    onChange={(e) => setEngineSpecs({ ...engineSpecs, fuel: e.target.value })}
+                                    className="w-full h-12 px-4 bg-white border-2 border-slate-200 rounded-xl font-bold outline-none appearance-none"
+                                >
                                     <option value="Diesel">Diesel</option>
                                     <option value="Benzin">Benzin</option>
                                     <option value="Hibrid">Hibrid</option>
@@ -225,8 +262,9 @@ export default function EditVehiclePage() {
                         </div>
                     </div>
 
-                    <button type="submit" className="w-full h-24 bg-blue-600 hover:bg-slate-900 text-white rounded-[2.5rem] font-black text-2xl uppercase tracking-[0.2em] shadow-2xl transition-all flex items-center justify-center gap-4 active:scale-[0.98]">
-                        <Save size={28} /> SPREMI IZMJENE
+                    {/* SUBMIT BUTTON - IDENTICAL STYLE */}
+                    <button type="submit" className="w-full h-20 bg-blue-600 hover:bg-blue-700 text-white rounded-3xl font-black text-xl uppercase tracking-[0.2em] shadow-xl shadow-blue-200 transition-all flex items-center justify-center gap-3 active:scale-[0.98]">
+                        <Save size={20} /> SPREMI IZMJENE
                     </button>
                 </div>
             </form>

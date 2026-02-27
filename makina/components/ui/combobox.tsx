@@ -59,6 +59,7 @@ export function SmartSearch({
                 />
             </div>
 
+
             {isOpen && (
                 <div className="absolute z-[100] w-full mt-2 bg-white rounded-2xl shadow-2xl border-2 border-slate-100 overflow-hidden">
                     <div className="max-h-60 overflow-y-auto p-2">
@@ -99,19 +100,7 @@ export function SmartSearch({
                             </button>
                         ))}
 
-                        {onCreate && query && (
-                            <button
-                                type="button"
-                                onClick={() => {
-                                    onCreate(query);
-                                    setIsOpen(false);
-                                }}
-                                className="w-full flex items-center gap-3 p-3 rounded-xl bg-blue-50 text-blue-600 hover:bg-blue-100 transition-colors text-left"
-                            >
-                                <Plus size={16} />
-                                <span className="font-bold text-xs uppercase">Dodaj "{query}"</span>
-                            </button>
-                        )}
+
                     </div>
                 </div>
             )}

@@ -41,6 +41,7 @@ export default function SingleCardVehicleForm() {
             })
         }
         loadLearningData()
+        console.log('Loaded DB data for vehicle form:', dbData.companies)
     }, [])
 
     const modelOptions = dbData.vehicles
