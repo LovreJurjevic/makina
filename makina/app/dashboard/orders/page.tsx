@@ -16,7 +16,7 @@ export default function OrdersDashboard() {
     const [orders, setOrders] = useState<any[]>([])
     const [loading, setLoading] = useState(true)
     const [searchTerm, setSearchTerm] = useState('')
-    const [activeStatus, setActiveStatus] = useState('SVI')
+    const [activeStatus, setActiveStatus] = useState('OTVORENO')
     const [updatingId, setUpdatingId] = useState<number | null>(null)
 
     const statuses = ['SVI', 'OTVORENO', 'U TIJEKU', 'ČEKA DIJELOVE', 'ZAVRŠENO']

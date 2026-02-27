@@ -7,7 +7,8 @@ import {
     isSameDay, isToday, addMonths, getDay, startOfToday
 } from 'date-fns'
 import { hr } from 'date-fns/locale'
-import { ChevronLeft, ChevronRight, Plus, Clock, User, Car, X, Calendar as CalendarIcon } from 'lucide-react'
+// Import Trash2 icon
+import { ChevronLeft, ChevronRight, Plus, Clock, User, Car, X, Calendar as CalendarIcon, Trash2 } from 'lucide-react'
 import { SmartSearch } from '@/components/ui/combobox'
 
 export default function TimetablePage() {
@@ -74,7 +75,6 @@ export default function TimetablePage() {
     }
 
     const handleAddReservation = async () => {
-        // 1. Get current user ID for RLS compliance
         const { data: { user } } = await supabase.auth.getUser();
 
         if (!user) {
@@ -85,20 +85,33 @@ export default function TimetablePage() {
         const { error } = await supabase.from('reservations').insert([{
             scheduled_date: format(selectedDate, 'yyyy-MM-dd'),
             scheduled_time: newRes.time,
-            // Ensure these match your actual DB column names
-            client_id: parseInt(newRes.client_id), // Clients ID is usually an INT
+            client_id: parseInt(newRes.client_id),
             service_description: newRes.desc,
-            user_id: user.id // Required by your RLS policy
+            user_id: user.id
         }]);
 
         if (error) {
             console.error("Error saving reservation:", error.message);
-            alert(`Greška: ${error.message}`); // Show actual DB error to user
+            alert(`Greška: ${error.message}`);
         } else {
             setShowAddModal(false);
             fetchCounts();
-            // Clear form
             setNewRes({ vehicle_id: '', client_id: '', time: '08:00', desc: '' });
+        }
+    };
+
+    // 4. Delete Reservation Function
+    const handleDeleteReservation = async (id: any) => {
+        if (!confirm('Jeste li sigurni da želite obrisati ovu rezervaciju?')) return;
+
+        const { error } = await supabase.from('reservations').delete().eq('id', id);
+
+        if (error) {
+            console.error('Error deleting reservation:', error.message);
+            alert(`Greška: ${error.message}`);
+        } else {
+            // Refresh data: counts to update calendar, side panel updates via useEffect
+            fetchCounts();
         }
     };
 
@@ -209,7 +222,15 @@ export default function TimetablePage() {
                                             <Clock size={12} className="text-blue-600" />
                                             <span className="font-black text-xs text-slate-900">{res.scheduled_time.slice(0, 5)}</span>
                                         </div>
-                                        <div className="text-[10px] font-black uppercase text-slate-400">NA ČEKANJU</div>
+                                        <div className="flex items-center gap-2">
+                                            <button
+                                                onClick={() => handleDeleteReservation(res.id)}
+                                                className="p-1 text-slate-400 hover:text-red-500 rounded-lg hover:bg-red-50 transition-colors"
+                                                title="Obriši rezervaciju"
+                                            >
+                                                <Trash2 size={14} />
+                                            </button>
+                                        </div>
                                     </div>
                                     <h4 className="font-black text-slate-900 uppercase tracking-tight mb-2 leading-tight">
                                         {res.service_description || 'Opis nije unesen'}
@@ -249,7 +270,6 @@ export default function TimetablePage() {
                                                 value={newRes.time}
                                                 onChange={e => setNewRes({ ...newRes, time: e.target.value })}
                                             >
-                                                {/* Generates slots from 07:00 to 19:00 */}
                                                 {Array.from({ length: 13 }).map((_, i) => {
                                                     const hour = (i + 7).toString().padStart(2, '0');
                                                     return (

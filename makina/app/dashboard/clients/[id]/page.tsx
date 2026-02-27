@@ -129,9 +129,6 @@ export default function ClientDetailPage() {
                             <h3 className="text-2xl font-black italic uppercase tracking-tighter text-slate-900">
                                 Vozni <span className="text-blue-600">Park</span>
                             </h3>
-                            <button className="flex items-center gap-2 bg-slate-900 text-white px-4 py-2 rounded-xl font-black uppercase text-[10px] tracking-widest hover:bg-slate-800 transition-all">
-                                <Plus size={14} /> Dodaj vozilo
-                            </button>
                         </div>
 
                         <div className="grid sm:grid-cols-2 gap-4">
