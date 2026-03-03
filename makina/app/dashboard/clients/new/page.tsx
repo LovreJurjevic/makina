@@ -60,20 +60,20 @@ export default function NewCustomerPage() {
                         {/* NAME */}
                         <div className="space-y-2">
                             <label className="text-[10px] font-black uppercase tracking-widest text-slate-500 ml-1">Ime</label>
-                            <input name="name" placeholder="Ivan" className="w-full h-14 px-6 bg-slate-50 border-2 border-slate-100 rounded-2xl font-bold focus:border-[#1d4ed8] focus:bg-white outline-none transition-all" />
+                            <input name="name" placeholder="Niko" className="w-full h-14 px-6 bg-slate-50 border-2 border-slate-100 rounded-2xl font-bold focus:border-[#1d4ed8] focus:bg-white outline-none transition-all" />
                         </div>
 
                         {/* SURNAME */}
                         <div className="space-y-2">
                             <label className="text-[10px] font-black uppercase tracking-widest text-slate-500 ml-1">Prezime</label>
-                            <input name="surname" placeholder="Horvat" className="w-full h-14 px-6 bg-slate-50 border-2 border-slate-100 rounded-2xl font-bold focus:border-[#1d4ed8] focus:bg-white outline-none transition-all" />
+                            <input name="surname" placeholder="Žunić" className="w-full h-14 px-6 bg-slate-50 border-2 border-slate-100 rounded-2xl font-bold focus:border-[#1d4ed8] focus:bg-white outline-none transition-all" />
                         </div>
                     </div>
 
                     {/* PHONEBOOK NAME - Important for his quick searching */}
                     <div className="space-y-2">
                         <label className="text-[10px] font-black uppercase tracking-widest text-slate-500 ml-1">Naziv klijenta u telefonskom imeniku</label>
-                        <input required name="phonebook_name" placeholder="Npr. Ivan Golf" className="w-full h-14 px-6 bg-slate-50 border-2 border-slate-100 rounded-2xl font-bold focus:border-[#1d4ed8] focus:bg-white outline-none transition-all" />
+                        <input required name="phonebook_name" placeholder="Npr. Niko Caddy" className="w-full h-14 px-6 bg-slate-50 border-2 border-slate-100 rounded-2xl font-bold focus:border-[#1d4ed8] focus:bg-white outline-none transition-all" />
                     </div>
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">

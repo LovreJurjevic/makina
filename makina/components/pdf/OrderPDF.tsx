@@ -1,16 +1,10 @@
 import { Document, Page, Text, View, StyleSheet, Font } from '@react-pdf/renderer';
 
-// This points to your public/fonts folder
 Font.register({
     family: 'Inter',
     fonts: [
-        {
-            src: '/fonts/Inter-Regular.ttf'
-        },
-        {
-            src: '/fonts/Inter-Bold.ttf',
-            fontWeight: 700
-        },
+        { src: '/fonts/Inter-Regular.ttf' },
+        { src: '/fonts/Inter-Bold.ttf', fontWeight: 700 },
     ]
 });
 
@@ -19,21 +13,21 @@ const styles = StyleSheet.create({
         padding: 40,
         fontFamily: 'Inter',
         fontSize: 10,
-        color: '#0f172a'
+        color: '#0f172a',
+        display: 'flex',
+        flexDirection: 'column',
     },
     header: {
         flexDirection: 'row',
         justifyContent: 'space-between',
         borderBottomWidth: 2,
         borderBottomColor: '#0f172a',
-        borderBottomStyle: 'solid',
         paddingBottom: 20,
         marginBottom: 30
     },
     brand: {
         fontSize: 24,
         fontWeight: 700,
-        letterSpacing: -1,
         textTransform: 'uppercase'
     },
     meta: {
@@ -42,13 +36,16 @@ const styles = StyleSheet.create({
     grid: {
         flexDirection: 'row',
         gap: 20,
-        marginBottom: 30
+        marginBottom: 20
     },
     col: {
         flex: 1
     },
     section: {
-        marginBottom: 20
+        marginBottom: 10,
+        flex: 1, // This allows the section to expand
+        display: 'flex',
+        flexDirection: 'column'
     },
     label: {
         fontSize: 8,
@@ -67,13 +64,31 @@ const styles = StyleSheet.create({
         padding: 15,
         borderRadius: 8,
         borderWidth: 1,
-        borderStyle: 'solid',
-        borderColor: '#e2e8f0'
+        borderColor: '#e2e8f0',
+        flex: 1, // Grows to fill the section
+        display: 'flex',
+        flexDirection: 'column'
     },
     descriptionText: {
         fontSize: 10,
         lineHeight: 1.5,
-        color: '#334155'
+        color: '#334155',
+        marginBottom: 10 
+    },
+    inputBox: {
+        flex: 1, // Instead of minHeight: 300, it now fills exactly the remaining space
+        borderWidth: 1,
+        borderStyle: 'solid',
+        borderColor: '#cbd5e1',
+        borderRadius: 8,
+        padding: 10,
+        backgroundColor: '#ffffff',
+    },
+    signatureContainer: {
+        marginTop: 20,
+        marginBottom: 40,
+        flexDirection: 'row',
+        justifyContent: 'center'
     },
     footer: {
         position: 'absolute',
@@ -82,7 +97,6 @@ const styles = StyleSheet.create({
         right: 40,
         borderTopWidth: 1,
         borderTopColor: '#e2e8f0',
-        borderTopStyle: 'solid',
         paddingTop: 10,
         textAlign: 'center',
         fontSize: 8,
@@ -95,9 +109,9 @@ export const OrderPDF = ({ order }: any) => (
         <Page size="A4" style={styles.page}>
             <View style={styles.header}>
                 <View>
-                    <Text style={styles.brand}>MAKINA</Text>
+                    <Text style={styles.brand}>MAKI</Text>
                     <Text style={{ fontSize: 8, color: '#3b82f6', fontWeight: 700 }}>
-                        AUTO SERVIS I DIJAGNOSTIKA
+                        OBRT ZA AUTOMEHANIČARSKE USLUGE
                     </Text>
                 </View>
                 <View style={styles.meta}>
@@ -135,28 +149,19 @@ export const OrderPDF = ({ order }: any) => (
                 <Text style={styles.label}>Opis Zahvata i Bilješke</Text>
                 <View style={styles.descriptionBox}>
                     <Text style={styles.descriptionText}>{order.description || 'Nema opisa.'}</Text>
+                    <View style={styles.inputBox}>
+                        <Text style={[styles.label, {color: '#94a3b8'}]}>Napomene klijenta / Dodatne usluge / Opis radova</Text>
+                    </View>
                 </View>
             </View>
 
-            {order.notes_from_worker && (
-                <View style={styles.section}>
-                    <Text style={styles.label}>Napomena Mehaničara</Text>
-                    <Text style={styles.descriptionText}>
-                        {order.notes_from_worker}
-                    </Text>
-                </View>
-            )}
-
-            <View style={{ marginTop: 60, flexDirection: 'row', justifyContent: 'space-between' }}>
-                <View style={{ width: 180, borderTopWidth: 1, borderTopColor: '#000', borderTopStyle: 'solid', paddingTop: 8 }}>
-                    <Text style={styles.label}>Potpis servisa (M.P.)</Text>
-                </View>
-                <View style={{ width: 180, borderTopWidth: 1, borderTopColor: '#000', borderTopStyle: 'solid', paddingTop: 8 }}>
-                    <Text style={styles.label}>Potpis klijenta</Text>
+            <View style={styles.signatureContainer}>
+                <View style={{ width: 250, borderTopWidth: 1, borderTopColor: '#000', paddingTop: 8, textAlign: 'center' }}>
+                    <Text style={styles.label}>Potpis servisa</Text>
                 </View>
             </View>
 
-            <Text style={styles.footer}>MAKINA Auto Servis | Zagreb, Hrvatska | Hvala na povjerenju!</Text>
+            <Text style={styles.footer}>MAKI | Zadar, Hrvatska | Hvala na povjerenju!</Text>
         </Page>
     </Document>
 );
