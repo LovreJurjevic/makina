@@ -12,7 +12,7 @@ export async function GET(request: Request) {
     // Search Clients
     const { data: clients } = await supabase
         .from("clients")
-        .select("id, name, surname")
+        .select("id, name, surname, phone_number")
         .ilike("search_name", `%${query}%`) // Matches "Vito", "Jurjević", or "Vito Jurjević"
         .limit(5);
 
