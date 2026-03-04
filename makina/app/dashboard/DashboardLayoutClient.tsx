@@ -46,7 +46,7 @@ export default function DashboardLayoutClient({
                 <div className="p-8 border-b border-blue-600/50 flex justify-between items-center">
                     <div>
                         <h2 className="text-2xl font-black italic tracking-tighter text-white uppercase">MAKINA</h2>
-                        <p className="text-[10px] font-bold uppercase tracking-[0.3em] opacity-50">Workshop OS</p>
+                        <p className="text-[10px] font-bold uppercase tracking-[0.3em] opacity-50">By Lovre Jurjević</p>
                     </div>
                     <button onClick={closeMenu} className="lg:hidden text-white/50 hover:text-white">
                         <X size={24} />
@@ -87,7 +87,7 @@ export default function DashboardLayoutClient({
                         <div className="flex items-center gap-3 text-slate-400 text-[10px] font-black uppercase tracking-widest">
                             <span className="hidden md:inline">Makina</span>
                             <span className="hidden md:inline text-slate-200">/</span>
-                            <span className="text-slate-900 truncate">Automehaničarske usluge</span>
+                            <span className="text-slate-900 truncate">MAKI - obrt za automehaničarske usluge</span>
                         </div>
                     </div>
 
