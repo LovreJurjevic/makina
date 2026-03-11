@@ -277,7 +277,7 @@ export default function TimetablePage() {
                                         <div className="flex items-center gap-3 text-slate-400 mb-2">
                                             <div className="flex items-center gap-1">
                                                 <User size={12} />
-                                                <span className="text-[10px] font-black uppercase tracking-widest truncate">{res.clients?.name} {res.clients?.surname}</span>
+                                                <span className="text-[10px] font-black uppercase tracking-widest truncate">{res.clients?.name} {res.clients?.surname} ({res.clients?.phone_number})</span>
                                             </div>
                                         </div>
                                         {/* SERVICE DESCRIPTION SNIPPET */}

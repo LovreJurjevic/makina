@@ -2,25 +2,70 @@
 
 import React, { useState, useEffect } from 'react'
 import { createClient } from '@/lib/supabase/client'
-import { useParams } from 'next/navigation'
+import { useParams, useRouter } from 'next/navigation'
 import Link from 'next/link'
 import {
     User, Hash, Gauge, Calendar, Wrench,
     ChevronRight, Edit3, ArrowLeft, Fuel, Activity, Building2, Car, Zap,
-    Search, FilterX, FileText
+    Search, FilterX, FileText, Trash2, AlertTriangle
 } from 'lucide-react'
 import { format } from 'date-fns'
 import { hr } from 'date-fns/locale'
 
 import brands from '@/lib/data/brands.json'
 
+function DeleteConfirmModal({ vehicle, onConfirm, onCancel }: {
+    vehicle: any,
+    onConfirm: () => void,
+    onCancel: () => void
+}) {
+    return (
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+            <div className="bg-white rounded-3xl p-8 max-w-sm w-full shadow-2xl border-2 border-slate-100">
+                <div className="flex items-center gap-4 mb-6">
+                    <div className="p-3 bg-red-50 rounded-2xl text-red-500">
+                        <AlertTriangle size={24} />
+                    </div>
+                    <div>
+                        <h2 className="font-black uppercase tracking-tighter text-slate-900 text-lg leading-none">Obriši vozilo</h2>
+                        <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-1">Ova radnja je trajna</p>
+                    </div>
+                </div>
+                <p className="text-sm font-bold text-slate-500 mb-2">
+                    Sigurno želiš obrisati:
+                </p>
+                <div className="bg-slate-50 rounded-2xl p-4 mb-6">
+                    <p className="font-black uppercase text-lg tracking-tighter text-slate-900">{vehicle.registration}</p>
+                    <p className="text-xs font-bold text-slate-400 uppercase italic">{vehicle.make} {vehicle.model}</p>
+                </div>
+                <div className="flex gap-3">
+                    <button
+                        onClick={onCancel}
+                        className="flex-1 h-12 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-2xl font-black uppercase text-xs tracking-widest transition-all"
+                    >
+                        Odustani
+                    </button>
+                    <button
+                        onClick={onConfirm}
+                        className="flex-1 h-12 bg-red-500 hover:bg-red-600 text-white rounded-2xl font-black uppercase text-xs tracking-widest transition-all shadow-lg shadow-red-100"
+                    >
+                        Obriši
+                    </button>
+                </div>
+            </div>
+        </div>
+    )
+}
+
 export default function VehicleDetailsPage() {
     const { id } = useParams()
+    const router = useRouter()
     const supabase = createClient()
     const [vehicle, setVehicle] = useState<any>(null)
     const [orders, setOrders] = useState<any[]>([])
     const [loading, setLoading] = useState(true)
     const [searchTerm, setSearchTerm] = useState('')
+    const [showDeleteModal, setShowDeleteModal] = useState(false)
 
     useEffect(() => {
         async function fetchVehicleData() {
@@ -43,6 +88,15 @@ export default function VehicleDetailsPage() {
         fetchVehicleData()
     }, [id, supabase])
 
+    async function handleDelete() {
+        const { error } = await supabase.from('vehicles').delete().eq('id', id)
+        if (error) {
+            alert('Greška pri brisanju: ' + error.message)
+        } else {
+            router.push('/dashboard/vehicles')
+        }
+    }
+
     const filteredOrders = orders.filter(o =>
         o.description?.toLowerCase().includes(searchTerm.toLowerCase()) ||
         o.id.toString().includes(searchTerm)
@@ -55,14 +109,34 @@ export default function VehicleDetailsPage() {
 
     return (
         <div className="p-4 sm:p-8 space-y-6 sm:space-y-8 max-w-7xl mx-auto">
+
+            {showDeleteModal && (
+                <DeleteConfirmModal
+                    vehicle={vehicle}
+                    onConfirm={handleDelete}
+                    onCancel={() => setShowDeleteModal(false)}
+                />
+            )}
+
             {/* TOP NAVIGATION / HEADER */}
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 sm:gap-0">
                 <Link href="/dashboard/vehicles" className="inline-flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-slate-400 hover:text-blue-600 transition-colors">
                     <ArrowLeft size={14} strokeWidth={3} /> Povratak na listu
                 </Link>
-                <Link href={`/dashboard/vehicles/edit/${vehicle.id}`} className="flex items-center justify-center gap-3 bg-white border-2 border-slate-100 px-6 py-3 rounded-xl sm:rounded-2xl font-black uppercase text-[10px] tracking-widest hover:border-blue-600 hover:text-blue-600 transition-all shadow-sm">
-                    <Edit3 size={16} /> Uredi Vozilo
-                </Link>
+                <div className="flex items-center gap-3">
+                    <Link
+                        href={`/dashboard/vehicles/edit/${vehicle.id}`}
+                        className="flex items-center justify-center gap-3 bg-white border-2 border-slate-100 px-6 py-3 rounded-xl sm:rounded-2xl font-black uppercase text-[10px] tracking-widest hover:border-blue-600 hover:text-blue-600 transition-all shadow-sm"
+                    >
+                        <Edit3 size={16} /> Uredi Vozilo
+                    </Link>
+                    <button
+                        onClick={() => setShowDeleteModal(true)}
+                        className="flex items-center justify-center gap-3 bg-white border-2 border-slate-100 px-6 py-3 rounded-xl sm:rounded-2xl font-black uppercase text-[10px] tracking-widest hover:border-red-400 hover:text-red-500 transition-all shadow-sm"
+                    >
+                        <Trash2 size={16} /> Obriši
+                    </button>
+                </div>
             </div>
 
             {/* VEHICLE MAIN BANNER */}
@@ -152,7 +226,6 @@ export default function VehicleDetailsPage() {
                                 placeholder="PRETRAŽI POVIJEST (NPR. 'KOČNICE', 'SERVIS', 'PUMPA'...)"
                                 value={searchTerm}
                                 onChange={(e) => setSearchTerm(e.target.value)}
-                                /* Increased pl-16 to pl-20 to ensure text never touches the magnifying glass */
                                 className="w-full bg-white border-2 border-slate-200 rounded-[2rem] py-6 pl-20 pr-8 font-black uppercase tracking-widest text-sm focus:border-slate-900 focus:outline-none transition-all shadow-sm"
                             />
                         </div>

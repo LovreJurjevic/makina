@@ -27,13 +27,17 @@ export async function createFullVehicleAction(formData: FormData) {
     const isNewCompany = formData.get('is_new_company') === 'true'
 
     if (isNewCompany) {
-        const { error: compErr } = await supabase.from('companies').upsert({
+        const { data, error: compErr } = await supabase.from('companies').upsert({
             oib: formData.get('new_company_oib'),
             name: formData.get('new_company_name'),
             address: formData.get('new_company_address'),
-        })
+        }).select().single() // <-- Add this to return the newly inserted row!
+
         if (compErr) throw new Error(compErr.message)
-        companyOib = formData.get('new_company_oib')
+        
+        // Because we used .single(), 'data' is an object, not an array.
+        // So you don't need data[0].id, just data.id
+        companyOib = data?.id || '' 
     }
 
     // 3. ENGINE LOGIC: Learning Upsert
@@ -71,6 +75,8 @@ export async function updateVehicleAction(formData: FormData) {
 
     // 1. Update Engine data (or find/create)
     const engineCode = formData.get('engine_code') as string
+
+    console.log('Updating vehicle with engine code:', formData)
     const { data: engine } = await supabase
         .from('engines')
         .upsert({
@@ -83,6 +89,7 @@ export async function updateVehicleAction(formData: FormData) {
         .single()
 
     // 2. Update Vehicle data
+    const clientId = formData.get('client_id') as string
     const { error } = await supabase
         .from('vehicles')
         .update({
@@ -90,10 +97,10 @@ export async function updateVehicleAction(formData: FormData) {
             vin: formData.get('vin'),
             make: formData.get('make'),
             model: formData.get('model'),
-            year: formData.get('year'),
-            distance: formData.get('distance'),
+            year: formData.get('year') ? parseInt(formData.get('year') as string) : null,
+            distance: formData.get('distance') ? parseInt(formData.get('distance') as string) : null,
             engine: engine?.id,
-            client: formData.get('client_id'),
+            client: clientId ? parseInt(clientId as string) : null,
         })
         .eq('id', vehicleId)
 

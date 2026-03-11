@@ -5,7 +5,50 @@ import { createClient } from '@/lib/supabase/client'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import brands from '@/lib/data/brands.json'
-import { Search, Edit2, Plus, User, Zap, ChevronRight, Phone } from 'lucide-react'
+import { Search, Edit2, Plus, User, Zap, ChevronRight, Trash2, X, AlertTriangle } from 'lucide-react'
+
+function DeleteConfirmModal({ vehicle, onConfirm, onCancel }: {
+    vehicle: any,
+    onConfirm: () => void,
+    onCancel: () => void
+}) {
+    return (
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+            <div className="bg-white rounded-3xl p-8 max-w-sm w-full shadow-2xl border-2 border-slate-100">
+                <div className="flex items-center gap-4 mb-6">
+                    <div className="p-3 bg-red-50 rounded-2xl text-red-500">
+                        <AlertTriangle size={24} />
+                    </div>
+                    <div>
+                        <h2 className="font-black uppercase tracking-tighter text-slate-900 text-lg leading-none">Obriši vozilo</h2>
+                        <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-1">Ova radnja je trajna</p>
+                    </div>
+                </div>
+                <p className="text-sm font-bold text-slate-500 mb-2">
+                    Sigurno želiš obrisati:
+                </p>
+                <div className="bg-slate-50 rounded-2xl p-4 mb-6">
+                    <p className="font-black uppercase text-lg tracking-tighter text-slate-900">{vehicle.registration}</p>
+                    <p className="text-xs font-bold text-slate-400 uppercase italic">{vehicle.make} {vehicle.model}</p>
+                </div>
+                <div className="flex gap-3">
+                    <button
+                        onClick={onCancel}
+                        className="flex-1 h-12 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-2xl font-black uppercase text-xs tracking-widest transition-all"
+                    >
+                        Odustani
+                    </button>
+                    <button
+                        onClick={onConfirm}
+                        className="flex-1 h-12 bg-red-500 hover:bg-red-600 text-white rounded-2xl font-black uppercase text-xs tracking-widest transition-all shadow-lg shadow-red-100"
+                    >
+                        Obriši
+                    </button>
+                </div>
+            </div>
+        </div>
+    )
+}
 
 export default function VehicleListPage() {
     const supabase = createClient()
@@ -13,6 +56,8 @@ export default function VehicleListPage() {
     const [vehicles, setVehicles] = useState<any[]>([])
     const [query, setQuery] = useState('')
     const [loading, setLoading] = useState(true)
+    const [vehicleToDelete, setVehicleToDelete] = useState<any | null>(null)
+    const [deleting, setDeleting] = useState(false)
 
     useEffect(() => {
         async function fetchVehicles() {
@@ -50,8 +95,30 @@ export default function VehicleListPage() {
         })
     }, [query, vehicles])
 
+    async function handleDelete() {
+        if (!vehicleToDelete) return
+        setDeleting(true)
+        const { error } = await supabase.from('vehicles').delete().eq('id', vehicleToDelete.id)
+        if (!error) {
+            setVehicles(prev => prev.filter(v => v.id !== vehicleToDelete.id))
+        } else {
+            alert('Greška pri brisanju: ' + error.message)
+        }
+        setDeleting(false)
+        setVehicleToDelete(null)
+    }
+
     return (
         <div className="p-4 sm:p-8 space-y-6 sm:space-y-8 max-w-7xl mx-auto">
+
+            {vehicleToDelete && (
+                <DeleteConfirmModal
+                    vehicle={vehicleToDelete}
+                    onConfirm={handleDelete}
+                    onCancel={() => setVehicleToDelete(null)}
+                />
+            )}
+
             {/* HEADER & SEARCH */}
             <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
                 <div>
@@ -77,12 +144,12 @@ export default function VehicleListPage() {
                 </div>
             </div>
 
-            {/* MOBILE LIST VIEW (Visible only on small screens) */}
+            {/* MOBILE LIST VIEW */}
             <div className="grid grid-cols-1 gap-4 lg:hidden">
                 {filteredVehicles.map((vehicle) => {
                     const brandLogo = brands.find(b => b.name.toLowerCase() === vehicle.make?.toLowerCase())?.image.thumb
                     return (
-                        <div 
+                        <div
                             key={vehicle.id}
                             onClick={() => router.push(`/dashboard/vehicles/${vehicle.id}`)}
                             className="bg-white p-5 rounded-3xl border-2 border-slate-100 shadow-sm active:scale-[0.98] transition-all"
@@ -97,14 +164,22 @@ export default function VehicleListPage() {
                                         <div className="text-[10px] font-bold uppercase text-slate-400 italic mt-1">{vehicle.make} {vehicle.model}</div>
                                     </div>
                                 </div>
-                                <button 
-                                    onClick={(e) => { e.stopPropagation(); router.push(`/dashboard/vehicles/edit/${vehicle.id}`); }}
-                                    className="p-2 bg-slate-50 text-slate-400 rounded-lg"
-                                >
-                                    <Edit2 size={16} />
-                                </button>
+                                <div className="flex items-center gap-2">
+                                    <button
+                                        onClick={(e) => { e.stopPropagation(); router.push(`/dashboard/vehicles/edit/${vehicle.id}`); }}
+                                        className="p-2 bg-slate-50 text-slate-400 rounded-lg"
+                                    >
+                                        <Edit2 size={16} />
+                                    </button>
+                                    <button
+                                        onClick={(e) => { e.stopPropagation(); setVehicleToDelete(vehicle); }}
+                                        className="p-2 bg-red-50 text-red-400 rounded-lg active:bg-red-100 transition-colors"
+                                    >
+                                        <Trash2 size={16} />
+                                    </button>
+                                </div>
                             </div>
-                            
+
                             <div className="pt-4 border-t border-slate-50 flex items-center justify-between">
                                 <div className="flex items-center gap-2">
                                     <div className="w-7 h-7 bg-blue-50 rounded-full flex items-center justify-center text-blue-600">
@@ -122,7 +197,7 @@ export default function VehicleListPage() {
                 })}
             </div>
 
-            {/* DESKTOP TABLE VIEW (Hidden on small screens) */}
+            {/* DESKTOP TABLE VIEW */}
             <div className="hidden lg:block bg-white rounded-[2.5rem] border-2 border-slate-100 shadow-xl overflow-hidden">
                 <table className="w-full text-left">
                     <thead className="bg-slate-50 border-b-2 border-slate-100">
@@ -164,12 +239,20 @@ export default function VehicleListPage() {
                                         </div>
                                     </td>
                                     <td className="p-6 text-right">
-                                        <button
-                                            onClick={(e) => { e.stopPropagation(); router.push(`/dashboard/vehicles/edit/${vehicle.id}`); }}
-                                            className="inline-flex items-center justify-center w-12 h-12 rounded-2xl bg-slate-100 text-slate-400 hover:bg-blue-600 hover:text-white hover:shadow-lg hover:shadow-blue-200 transition-all"
-                                        >
-                                            <Edit2 size={18} />
-                                        </button>
+                                        <div className="flex items-center justify-end gap-2">
+                                            <button
+                                                onClick={(e) => { e.stopPropagation(); router.push(`/dashboard/vehicles/edit/${vehicle.id}`); }}
+                                                className="inline-flex items-center justify-center w-12 h-12 rounded-2xl bg-slate-100 text-slate-400 hover:bg-blue-600 hover:text-white hover:shadow-lg hover:shadow-blue-200 transition-all"
+                                            >
+                                                <Edit2 size={18} />
+                                            </button>
+                                            <button
+                                                onClick={(e) => { e.stopPropagation(); setVehicleToDelete(vehicle); }}
+                                                className="inline-flex items-center justify-center w-12 h-12 rounded-2xl bg-slate-100 text-slate-400 hover:bg-red-500 hover:text-white hover:shadow-lg hover:shadow-red-100 transition-all"
+                                            >
+                                                <Trash2 size={18} />
+                                            </button>
+                                        </div>
                                     </td>
                                 </tr>
                             )

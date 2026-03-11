@@ -64,7 +64,7 @@ export default function SingleCardVehicleForm() {
                 <div className="bg-slate-900 p-6 sm:p-10 text-white flex flex-col md:flex-row justify-between items-center gap-6">
                     <div className="flex-1 w-full text-left">
                         <label className="text-[9px] sm:text-[10px] font-black uppercase tracking-[0.2em] text-blue-400">Registracija</label>
-                        <input required name="registration" placeholder="ZD000XX" className="bg-transparent text-4xl sm:text-5xl font-black uppercase outline-none w-full placeholder:text-slate-800" />
+                        <input name="registration" placeholder="ZD000XX" className="bg-transparent text-4xl sm:text-5xl font-black uppercase outline-none w-full placeholder:text-slate-800" />
                     </div>
                     <div className="w-full md:w-72 text-left">
                         <label className="text-[9px] sm:text-[10px] font-black uppercase tracking-[0.2em] text-blue-400">VIN</label>
@@ -82,7 +82,10 @@ export default function SingleCardVehicleForm() {
                                 label="Klijent (Vlasnik)"
                                 placeholder="Traži..."
                                 options={dbData.clients.map((c: any) => ({ id: c.id, label: c.phonebook_name || `${c.name} ${c.surname}`, subLabel: c.phone_number }))}
-                                onSelect={(opt: any) => setSelectedClientId(opt.id)}
+                                onSelect={(opt: any) => {
+                                    setSelectedClientId(opt.id)
+                                    setUi({ ...ui, newClient: false }) // ← close the panel on selection
+                                }}
                                 onCreate={() => setUi({ ...ui, newClient: true })}
                             />
                             <input type="hidden" name="client_id" value={selectedClientId} />
@@ -145,14 +148,17 @@ export default function SingleCardVehicleForm() {
                                 )}
                             </div>
 
-                            <div className="space-y-2">
+                             <div className="space-y-2">
                                 <SmartSearch
                                     label="Model"
-                                    placeholder="Npr. Golf..."
+                                    initialValue={selectedModel || ''}
                                     options={modelOptions}
                                     onSelect={(opt: any) => setSelectedModel(opt.label)}
+                                    // Add this line below to catch any new model the user types!
+                                    onCreate={(val: string) => setSelectedModel(val)}
                                 />
-                                <input type="hidden" name="model" value={selectedModel} />
+                                {/* Best to keep this hidden so the user only interacts with the SmartSearch */}
+                                <input type="hidden" name="model" value={selectedModel || ''} />
                             </div>
 
                             <div className="grid grid-cols-2 gap-4">

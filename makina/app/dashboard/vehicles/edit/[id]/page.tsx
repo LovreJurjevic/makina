@@ -52,7 +52,7 @@ export default function EditVehiclePage() {
             if (currentVe.data) {
                 const v = currentVe.data
                 setVehicle(v)
-                setSelectedClientId(v.client_id || '')
+                setSelectedClientId(v.client || '')
                 // Set initial company OIB from vehicle data
                 setSelectedCompanyOib(v.company_oib || '')
                 setEngineCode(v.engines?.code || '')
@@ -179,7 +179,10 @@ export default function EditVehiclePage() {
                                     initialValue={selectedModel || ''}
                                     options={modelOptions}
                                     onSelect={(opt: any) => setSelectedModel(opt.label)}
+                                    // Add this line below to catch any new model the user types!
+                                    onCreate={(val: string) => setSelectedModel(val)}
                                 />
+                                {/* Best to keep this hidden so the user only interacts with the SmartSearch */}
                                 <input type="hidden" name="model" value={selectedModel || ''} />
                             </div>
 
